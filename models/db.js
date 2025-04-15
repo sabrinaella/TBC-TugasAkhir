@@ -1,16 +1,21 @@
 const mysql = require('mysql2');
-require('dotenv').config();
-
-const db = mysql.createConnection({
+// Membuat koneksi dengan MySQL
+const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  connectTimeout: 10000 // Timeout 10 detik
 });
 
-db.connect((err) => {
-  if (err) throw err;
-  console.log('Connected to MySQL RDS!');
+// Menghubungkan ke database
+connection.connect(function(err) {
+  if (err) {
+    console.error('Error connecting: ' + err.stack);
+    return;
+  }
+  console.log('Connected as id ' + connection.threadId);
 });
 
-module.exports = db;
+// Mengeksport koneksi untuk digunakan di file lain
+module.exports = connection;
